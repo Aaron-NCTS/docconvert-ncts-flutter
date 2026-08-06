@@ -1,0 +1,25 @@
+name: docconvert_ncts
+description: "DocConvert NCTS - Convierte y administra tus documentos."
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+
+  # Gestión de estado: Provider es el más simple que cubre lo que
+  # necesitamos (documento seleccionado, progreso, historial) sin
+  # introducir una arquitectura más compleja de la necesaria.
+  provider: ^6.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true

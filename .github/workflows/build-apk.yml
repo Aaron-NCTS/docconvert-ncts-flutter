@@ -1,0 +1,43 @@
+name: Compilar APK Flutter
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    name: Compilar APK de depuración
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17 (Gradle lo requiere)
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Configurar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+
+      - name: Instalar dependencias
+        run: flutter pub get
+
+      - name: Analizar código
+        run: flutter analyze
+
+      - name: Correr pruebas
+        run: flutter test
+
+      - name: Compilar APK de depuración
+        run: flutter build apk --debug
+
+      - name: Subir APK como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: docconvert-ncts-debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
