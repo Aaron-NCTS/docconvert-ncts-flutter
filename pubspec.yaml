@@ -16,10 +16,59 @@ dependencies:
   # introducir una arquitectura más compleja de la necesaria.
   provider: ^6.1.2
 
+  # Selección de archivos (PDF/DOCX/imágenes) desde cualquier proveedor
+  # de Android (Descargas, Drive, Fotos, etc.) -- maduro y ampliamente
+  # usado, sin el problema de filtros MIME que tuvimos con plyer en Python.
+  file_picker: ^8.1.2
+
+  # Rutas de almacenamiento propio de la app (documentos, temporales).
+  path_provider: ^2.1.4
+  path: ^1.9.0
+
+  # Generación de PDF (Fotos -> PDF, Word -> PDF) en Dart puro.
+  pdf: ^3.11.1
+
+  # Procesar fotos (reducir resolución/calidad según lo que elija el
+  # usuario) antes de incrustarlas en el PDF -- sin esto, el selector de
+  # "Calidad" en Fotos a PDF no hacía nada real.
+  image: ^4.2.0
+
+  # Leer el contenido de un .docx (que es un ZIP con XML adentro) sin
+  # depender de ninguna librería de terceros para el formato -- mismo
+  # enfoque que ya usamos en Python con docx_lite.py.
+  archive: ^3.6.1
+  xml: ^6.5.0
+
+  # Extraer texto de PDF para PDF -> Word. Es la única pieza de este
+  # proyecto que usa una librería de un tercero (no hay una opción pura-
+  # Dart igual de robusta) -- decisión ya conversada y aceptada contigo.
+  syncfusion_flutter_pdf: ^27.1.58
+
+  # IDs únicos para cada documento generado (evita el bug de "índices
+  # inseguros" al eliminar/reordenar que mencionaste en la especificación).
+  uuid: ^4.5.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
 
+  # Genera los íconos de Android en todas las resoluciones a partir de
+  # una sola imagen fuente (ver flutter_launcher_icons: abajo). Se corre
+  # una sola vez con `dart run flutter_launcher_icons`, no es una
+  # dependencia que quede compilada dentro de la app final.
+  flutter_launcher_icons: ^0.14.1
+
 flutter:
   uses-material-design: true
+  assets:
+    - assets/icon/app_icon.png
+
+flutter_launcher_icons:
+  android: true
+  image_path: "assets/icon/app_icon.png"
+  # El logotipo ya trae su propio fondo negro; se usa tal cual para el
+  # ícono clásico. Se puede refinar más adelante con un ícono adaptativo
+  # (foreground con márgenes de seguridad) si el resultado se ve muy
+  # recortado en algunos lanzadores de Android.
+  min_sdk_android: 21

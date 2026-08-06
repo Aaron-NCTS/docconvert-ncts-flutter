@@ -24,7 +24,7 @@ class ScannerScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'El escáner con cámara se implementa en una fase proxima.',
+                'El escáner con cámara se implementa en una fase próxima.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),

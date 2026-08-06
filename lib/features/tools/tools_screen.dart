@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
-/// Pantalla "Herramientas": las 3 tarjetas de conversión. En esta Fase 1
-/// solo navegan a pantallas placeholder -- la funcionalidad real de cada
-/// una llega en su fase correspondiente (Fotos a PDF en la Fase 3, Word a
-/// PDF en la Fase 4, PDF a Word en la Fase 5).
+import '../pdf_to_word/pdf_to_word_screen.dart';
+import '../photos_to_pdf/photos_to_pdf_screen.dart';
+import '../word_to_pdf/word_to_pdf_screen.dart';
+
+/// Pantalla "Herramientas": las 3 tarjetas de conversión, ya conectadas
+/// a su implementación real (ver features/photos_to_pdf,
+/// features/word_to_pdf, features/pdf_to_word).
 class ToolsScreen extends StatelessWidget {
   const ToolsScreen({super.key});
 
@@ -18,30 +21,30 @@ class ToolsScreen extends StatelessWidget {
             icon: Icons.photo_library_outlined,
             title: 'Fotos a PDF',
             subtitle: 'Convierte una o varias fotografías en un PDF',
-            onTap: () => _showPending(context, 'Fotos a PDF'),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const PhotosToPdfScreen()),
+            ),
           ),
           const SizedBox(height: 12),
           _ToolCard(
             icon: Icons.picture_as_pdf_outlined,
             title: 'Word a PDF',
             subtitle: 'Convierte un documento DOCX en PDF',
-            onTap: () => _showPending(context, 'Word a PDF'),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const WordToPdfScreen()),
+            ),
           ),
           const SizedBox(height: 12),
           _ToolCard(
             icon: Icons.description_outlined,
             title: 'PDF a Word',
             subtitle: 'Convierte un documento PDF en DOCX',
-            onTap: () => _showPending(context, 'PDF a Word'),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const PdfToWordScreen()),
+            ),
           ),
         ],
       ),
-    );
-  }
-
-  void _showPending(BuildContext context, String tool) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$tool se implementa en una fase próxima.')),
     );
   }
 }
@@ -66,7 +69,7 @@ class _ToolCard extends StatelessWidget {
     return Card(
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -76,7 +79,7 @@ class _ToolCard extends StatelessWidget {
                 height: 48,
                 decoration: BoxDecoration(
                   color: colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(icon, color: colorScheme.onPrimaryContainer),
               ),
