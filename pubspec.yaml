@@ -19,7 +19,7 @@ dependencies:
   # Selección de archivos (PDF/DOCX/imágenes) desde cualquier proveedor
   # de Android (Descargas, Drive, Fotos, etc.) -- maduro y ampliamente
   # usado, sin el problema de filtros MIME que tuvimos con plyer en Python.
-  file_picker: ^8.1.2
+  file_picker: ^11.0.0
 
   # Rutas de almacenamiento propio de la app (documentos, temporales).
   path_provider: ^2.1.4

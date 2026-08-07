@@ -33,7 +33,7 @@ class _PdfToWordScreenState extends State<PdfToWordScreen> {
   String? _statusMessage;
 
   Future<void> _pickFile() async {
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
     );
