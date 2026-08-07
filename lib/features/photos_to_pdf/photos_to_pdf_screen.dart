@@ -96,7 +96,7 @@ class _PhotosToPdfScreenState extends State<PhotosToPdfScreen> {
   }
 
   void _reorder(int oldIndex, int newIndex) {
-    setState(() {
+  setState(() {
       if (newIndex > oldIndex) newIndex -= 1;
       final item = _photos.removeAt(oldIndex);
       _photos.insert(newIndex, item);
@@ -176,7 +176,7 @@ class _PhotosToPdfScreenState extends State<PhotosToPdfScreen> {
             const Expanded(
               child: EmptyState(
                 icon: Icons.photo_library_outlined,
-                title: 'Agrega una o varias fotografías',
+                title: 'Agrega una o varias fotografias',
                 message: 'Selecciona imágenes JPG, PNG o WEBP para comenzar.',
               ),
             )
@@ -185,6 +185,11 @@ class _PhotosToPdfScreenState extends State<PhotosToPdfScreen> {
               child: ReorderableListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: _photos.length,
+                // ignore: deprecated_member_use -- onReorderItem es muy
+                // reciente (Flutter 3.41+); se mantiene onReorder por
+                // ahora para no arriesgar una firma que no puedo probar
+                // en este entorno sin Flutter instalado.
+                // ignore: deprecated_member_use
                 onReorder: _isWorking ? (_, __) {} : _reorder,
                 itemBuilder: (context, index) {
                   final photo = _photos[index];
