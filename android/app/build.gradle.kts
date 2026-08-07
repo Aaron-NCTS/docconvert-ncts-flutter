@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "mx.novacoretech.docconvert_ncts"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
