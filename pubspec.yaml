@@ -17,9 +17,17 @@ dependencies:
   provider: ^6.1.2
 
   # Selección de archivos (PDF/DOCX/imágenes) desde cualquier proveedor
-  # de Android (Descargas, Drive, Fotos, etc.) -- maduro y ampliamente
-  # usado, sin el problema de filtros MIME que tuvimos con plyer en Python.
-  file_picker: ^11.0.0
+  # de Android (Descargas, Drive, Fotos, etc.). Nota real (confirmada en
+  # el changelog oficial en GitHub): la versión 8.x tenía el AAR
+  # compilado contra un SDK de Android viejo (arreglado en la 10.3.3,
+  # que actualiza a flutter.compileSdkVersion). La rama 11.x+ trae ese
+  # arreglo, pero migró su registro de plugin a un esquema de Kotlin más
+  # nuevo (pensado para AGP 9+) que rompe la compilación en un proyecto
+  # Flutter estándar como este (confirmado en los logs de GitHub Actions:
+  # "cannot find symbol class FilePickerPlugin"). La 10.x trae el primer
+  # arreglo sin el segundo problema -- por eso NO se necesita ningún
+  # dependency_overrides.
+  file_picker: ^10.3.3
 
   # Rutas de almacenamiento propio de la app (documentos, temporales).
   path_provider: ^2.1.4
@@ -54,9 +62,7 @@ dev_dependencies:
   flutter_lints: ^4.0.0
 
   # Genera los íconos de Android en todas las resoluciones a partir de
-  # una sola imagen fuente (ver flutter_launcher_icons: abajo). Se corre
-  # una sola vez con `dart run flutter_launcher_icons`, no es una
-  # dependencia que quede compilada dentro de la app final.
+  # una sola imagen fuente (ver flutter_launcher_icons: abajo).
   flutter_launcher_icons: ^0.14.1
 
 flutter:
@@ -67,8 +73,4 @@ flutter:
 flutter_launcher_icons:
   android: true
   image_path: "assets/icon/app_icon.png"
-  # El logotipo ya trae su propio fondo negro; se usa tal cual para el
-  # ícono clásico. Se puede refinar más adelante con un ícono adaptativo
-  # (foreground con márgenes de seguridad) si el resultado se ve muy
-  # recortado en algunos lanzadores de Android.
   min_sdk_android: 21

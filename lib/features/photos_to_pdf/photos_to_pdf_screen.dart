@@ -49,7 +49,7 @@ class _PhotosToPdfScreenState extends State<PhotosToPdfScreen> {
   }
 
   Future<void> _pickImages() async {
-    final result = await FilePicker.pickFiles(
+    final result = await FilePicker.platform.pickFiles(
       type: FileType.image,
       allowMultiple: true,
     );
