@@ -29,7 +29,17 @@ class DocumentRepository {
   /// el registro se descarta en silencio (nunca se muestra una tarjeta
   /// de "No disponible" -- si no es válido, simplemente no aparece).
   Future<List<DocumentItem>> loadValid() async {
-    final file = await _indexFile();
+    File file;
+    try {
+      file = await _indexFile();
+    } catch (_) {
+      // path_provider puede no tener canal de plataforma disponible
+      // (esto pasa siempre en pruebas de widgets, y en teoría también
+      // podría fallar en un dispositivo real en un estado raro) -- se
+      // trata igual que "todavía no hay documentos", en vez de
+      // propagar una excepción sin control.
+      return [];
+    }
     if (!await file.exists()) return [];
 
     List<dynamic> raw;
@@ -84,10 +94,10 @@ class DocumentRepository {
       // cualquier forma se quita del índice abajo.
     }
     current.removeWhere((d) => d.id == id);
-    await _writeAll(current);
+  await _writeAll(current);
   }
 
-  /// Renombra el archivo físico Y actualiza el registro. Conserva la
+  /// Renombra el archivo fisico Y actualiza el registro. Conserva la
   /// extensión original y evita nombres vacíos o inválidos.
   Future<DocumentItem> rename(String id, String newBaseName) async {
     final current = await loadValid();

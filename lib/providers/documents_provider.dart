@@ -23,7 +23,11 @@ class DocumentsProvider extends ChangeNotifier {
   List<DocumentItem> get photoItems => _items.where((d) => d.isFromPhotos).toList();
 
   Future<void> load() async {
-    _items = await _repository.loadValid();
+    try {
+      _items = await _repository.loadValid();
+    } catch (_) {
+      _items = [];
+    }
     _loading = false;
     notifyListeners();
   }
