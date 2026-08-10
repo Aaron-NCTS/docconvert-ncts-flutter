@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
 import 'features/home/home_shell.dart';
+import 'providers/documents_provider.dart';
+import 'services/document_repository.dart';
 
 class DocConvertApp extends StatelessWidget {
   const DocConvertApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'DocConvert NCTS',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
-      // "Modo del sistema" por defecto, como pide la especificación;
-      // el usuario podrá forzar claro/oscuro más adelante (Fase 7,
-      // Ajustes) sin que esto tenga que cambiar de estructura.
-      themeMode: ThemeMode.system,
-      home: const HomeShell(),
+    return ChangeNotifierProvider(
+      create: (_) => DocumentsProvider(DocumentRepository())..load(),
+      child: MaterialApp(
+        title: 'DocConvert NCTS',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light(),
+        darkTheme: AppTheme.dark(),
+        themeMode: ThemeMode.system,
+        home: const HomeShell(),
+      ),
     );
   }
 }

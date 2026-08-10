@@ -2,7 +2,10 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../providers/documents_provider.dart';
+import '../../services/document_registration_helper.dart';
 import '../../services/document_storage_service.dart';
 import '../../services/file_validation_service.dart';
 import '../../services/word_to_pdf_service.dart';
@@ -10,9 +13,8 @@ import '../../widgets/empty_state.dart';
 import '../../widgets/format_dialogs.dart';
 import '../../widgets/selected_file_card.dart';
 
-/// Word a PDF: implementación real. Selecciona un DOCX, lo valida por
-/// contenido real (no por extensión), muestra nombre/tamaño, permite
-/// quitarlo, y convierte de verdad a PDF.
+/// Word a PDF: implementación real. El resultado ya se registra en
+/// "Archivos creados" (antes quedaba aislado solo en esta pantalla).
 class WordToPdfScreen extends StatefulWidget {
   const WordToPdfScreen({super.key});
 
@@ -44,7 +46,7 @@ class _WordToPdfScreenState extends State<WordToPdfScreen> {
 
     if (!validation.isValid) {
       if (!mounted) return;
-      await FormatDialogs.showIncompatible(context, validation.message!);
+      await FormatDialogs.showIncompatible(context, 'Selecciona un documento DOCX válido.');
       return;
     }
 
@@ -88,17 +90,24 @@ class _WordToPdfScreenState extends State<WordToPdfScreen> {
         },
       );
 
+      final registered = await DocumentRegistrationHelper.fromCreatedFile(
+        path: outputPath,
+        tool: 'word_to_pdf',
+      );
       if (!mounted) return;
+      await context.read<DocumentsProvider>().registerCreatedFile(registered);
+
       setState(() {
         _isWorking = false;
         _statusMessage = null;
       });
       _removeFile();
 
+      if (!mounted) return;
       await FormatDialogs.showError(
         context,
         title: 'Archivo creado correctamente',
-        message: 'Se guardó como:\n${outputPath.split('/').last}',
+        message: 'Se guardó como:\n${outputPath.split('/').last}\n\nYa aparece en "Archivos creados".',
       );
     } catch (e) {
       if (!mounted) return;

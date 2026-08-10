@@ -11,49 +11,74 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.6
 
-  # Gestión de estado: Provider es el más simple que cubre lo que
-  # necesitamos (documento seleccionado, progreso, historial) sin
-  # introducir una arquitectura más compleja de la necesaria.
+  # Gestión de estado: Provider (documento seleccionado, progreso,
+  # y ahora también la lista real de Archivos creados).
   provider: ^6.1.2
 
   # Selección de archivos (PDF/DOCX/imágenes) desde cualquier proveedor
-  # de Android (Descargas, Drive, Fotos, etc.). Nota real (confirmada en
-  # el changelog oficial en GitHub): la versión 8.x tenía el AAR
-  # compilado contra un SDK de Android viejo (arreglado en la 10.3.3,
-  # que actualiza a flutter.compileSdkVersion). La rama 11.x+ trae ese
-  # arreglo, pero migró su registro de plugin a un esquema de Kotlin más
-  # nuevo (pensado para AGP 9+) que rompe la compilación en un proyecto
-  # Flutter estándar como este (confirmado en los logs de GitHub Actions:
-  # "cannot find symbol class FilePickerPlugin"). La 10.x trae el primer
-  # arreglo sin el segundo problema -- por eso NO se necesita ningún
-  # dependency_overrides.
+  # de Android. Nota real (confirmada en el changelog oficial en
+  # GitHub): la versión 8.x tenía el AAR compilado contra un SDK de
+  # Android viejo (arreglado en la 10.3.3). La rama 11.x+ trae ese
+  # arreglo pero migró su registro de plugin a un esquema de Kotlin más
+  # nuevo (AGP 9+) que rompe la compilación en un proyecto estándar
+  # (confirmado en logs de GitHub Actions: "cannot find symbol class
+  # FilePickerPlugin"). La 10.x trae el primer arreglo sin el segundo
+  # problema.
   file_picker: ^10.3.3
 
-  # Rutas de almacenamiento propio de la app (documentos, temporales).
+  # Rutas de almacenamiento propio de la app (documentos, temporales,
+  # y ahora también el índice JSON de "Archivos creados").
   path_provider: ^2.1.4
   path: ^1.9.0
 
-  # Generación de PDF (Fotos -> PDF, Word -> PDF) en Dart puro.
+  # Generación de PDF (Fotos -> PDF, Word -> PDF, Escáner -> PDF) en
+  # Dart puro.
   pdf: ^3.11.1
 
-  # Procesar fotos (reducir resolución/calidad según lo que elija el
-  # usuario) antes de incrustarlas en el PDF -- sin esto, el selector de
-  # "Calidad" en Fotos a PDF no hacía nada real.
+  # Procesar fotos: reducir resolución/calidad, girar, y (nuevo en esta
+  # ronda) los filtros del escáner (escala de grises, blanco y negro,
+  # contraste) -- todo con la misma librería, sin dependencias nativas
+  # propias.
   image: ^4.2.0
 
-  # Leer el contenido de un .docx (que es un ZIP con XML adentro) sin
-  # depender de ninguna librería de terceros para el formato -- mismo
-  # enfoque que ya usamos en Python con docx_lite.py.
+  # Leer el contenido de un .docx (ZIP con XML adentro) sin depender de
+  # ninguna librería de terceros para el formato -- mismo enfoque que
+  # docx_lite.py en la versión Python.
   archive: ^3.6.1
   xml: ^6.5.0
 
-  # Extraer texto de PDF para PDF -> Word. Es la única pieza de este
-  # proyecto que usa una librería de un tercero (no hay una opción pura-
-  # Dart igual de robusta) -- decisión ya conversada y aceptada contigo.
+  # Extraer texto de PDF para PDF -> Word. Única pieza que usa una
+  # librería de un tercero (no hay opción pura-Dart igual de robusta) --
+  # decisión ya conversada y aceptada.
   syncfusion_flutter_pdf: ^27.1.58
 
-  # IDs únicos para cada documento generado (evita el bug de "índices
-  # inseguros" al eliminar/reordenar que mencionaste en la especificación).
+  # Visor de PDF DENTRO de la app (pediste verlo sin salir de
+  # DocConvert NCTS). Mismo proveedor y familia de versiones que ya
+  # aceptamos arriba -- Dart puro, sin binarios nativos propios,
+  # mantenido activamente.
+  syncfusion_flutter_pdfviewer: ^27.1.58
+
+  # Compartir archivos con el selector nativo de Android, maneja
+  # FileProvider/content:// URIs por dentro.
+  share_plus: ^10.1.2
+
+  # Abrir un DOCX con la app externa instalada del usuario (Word, Google
+  # Docs, etc.) cuando no hay visor interno para ese formato -- también
+  # maneja content:// URIs internamente y detecta cuando no hay ninguna
+  # app compatible.
+  open_filex: ^4.6.0
+
+  # Formatear fechas ("Hoy", "Ayer", "3 ago 2026") en las tarjetas de
+  # Archivos creados.
+  intl: ^0.19.0
+
+  # Cámara real para el escáner. Paquete OFICIAL del equipo de Flutter
+  # (repositorio flutter/packages, no un tercero independiente) --
+  # mantenido activamente, soporta ARM64 sin configuración adicional.
+  camera: ^0.11.0+2
+
+  # IDs únicos para cada documento/foto/página generada (evita el bug de
+  # "índices inseguros" al eliminar/reordenar).
   uuid: ^4.5.1
 
 dev_dependencies:
@@ -62,7 +87,7 @@ dev_dependencies:
   flutter_lints: ^4.0.0
 
   # Genera los íconos de Android en todas las resoluciones a partir de
-  # una sola imagen fuente (ver flutter_launcher_icons: abajo).
+  # una sola imagen fuente (el logotipo real de NovaCore).
   flutter_launcher_icons: ^0.14.1
 
 flutter:

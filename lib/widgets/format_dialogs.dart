@@ -8,7 +8,9 @@ class FormatDialogs {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Formato no compatible'),
-        content: Text(specificMessage),
+        content: Text(
+          'El archivo seleccionado no corresponde con esta herramienta.\n\n$specificMessage',
+        ),
         actions: [
           FilledButton(
             onPressed: () => Navigator.of(context).pop(),

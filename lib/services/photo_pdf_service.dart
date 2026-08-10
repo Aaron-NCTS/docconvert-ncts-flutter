@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:image/image.dart' as img;
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:uuid/uuid.dart';
 
 enum PdfPageSizeOption { a4, carta }
 
@@ -17,6 +20,31 @@ enum PdfQualityOption { baja, media, alta }
 /// antes de incrustarla -- así "Baja" produce un PDF notablemente más
 /// ligero que "Alta", no solo un número decorativo en la pantalla.
 class PhotoPdfService {
+  /// Gira una foto 90° en sentido horario. Nunca modifica el archivo
+  /// original (puede ser una foto real del usuario en su galería, no
+  /// algo que la app deba tocar) -- copia primero a la carpeta temporal
+  /// de la app y rota esa copia, regresando su ruta. Cada llamada usa un
+  /// nombre nuevo para que la miniatura en pantalla siempre se refresque
+  /// (si se reutilizara el mismo nombre, algunos widgets de imagen
+  /// muestran una versión cacheada y no se ve el giro).
+  static Future<String> rotateToWorkingCopy(String sourcePath) async {
+    final bytes = await File(sourcePath).readAsBytes();
+    var decoded = img.decodeImage(bytes);
+    if (decoded == null) {
+      throw Exception('No se pudo procesar la imagen para girarla.');
+    }
+    decoded = img.bakeOrientation(decoded);
+    final rotated = img.copyRotate(decoded, angle: 90);
+
+    final tempDir = await getTemporaryDirectory();
+    final ext = p.extension(sourcePath).isEmpty ? '.jpg' : p.extension(sourcePath);
+    final outPath = p.join(tempDir.path, 'rot_${const Uuid().v4()}$ext');
+
+    final encoded = ext.toLowerCase() == '.png' ? img.encodePng(rotated) : img.encodeJpg(rotated, quality: 90);
+    await File(outPath).writeAsBytes(encoded);
+    return outPath;
+  }
+
   static PdfPageFormat _pageFormat(PdfPageSizeOption size) {
     switch (size) {
       case PdfPageSizeOption.a4:
@@ -116,5 +144,24 @@ class PhotoPdfService {
     onProgress?.call('Guardando PDF...');
     final outFile = File(outputPath);
     await outFile.writeAsBytes(await doc.save());
+  }
+
+  /// Gira una foto 90° en sentido horario, guardando el resultado en un
+  /// archivo temporal NUEVO (nunca sobreescribe el original -- si el
+  /// usuario gira varias veces, cada giro parte del archivo anterior,
+  /// pero el archivo de selección original del usuario nunca se toca).
+  static Future<String> rotate90(String path) async {
+    final bytes = await File(path).readAsBytes();
+    final decoded = img.decodeImage(bytes);
+    if (decoded == null) {
+      throw Exception('No se pudo procesar la imagen para girarla.');
+    }
+    final rotated = img.copyRotate(decoded, angle: 90);
+    final jpegBytes = img.encodeJpg(rotated, quality: 90);
+
+    final dir = await Directory.systemTemp.createTemp('docconvert_rotate_');
+    final newPath = '${dir.path}/rotated_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    await File(newPath).writeAsBytes(jpegBytes);
+    return newPath;
   }
 }
